@@ -273,13 +273,23 @@ https://www.ithome.com.tw/tech/47440
         right join [dbo].[Course] c 
         on s.RollNo = c.RollNO
         
- 15. Subquery (a sql embedded query within the where clause)
+16. Subquery (a sql embedded query within the where clause)
      1. Subquery is not limitted to select statement such as insert ...
      2. Subquery can be used to return a single value or row set [a column]; whereas join are used to return multiple rows [multiple columns]
      3. Subquery can only have one column in the select clause, unless mulitple columns are in the main query for subquery to compare its mulitple columns http://www.baskent.edu.tr/~tkaracay/etudio/ders/dbase/sql/htmSQL/OracleDers12.htm
      4. Subquery cannot use order by
      5. Subquery that return more than one row can use multiple value operators such as in operator
      6. Subquery cannot use between operator 
+
+17. Insert:
+    1. there are tow ways to insert: Insert manually or retrieve from other columns
+
+        INSERT INTO [dbo].[salesstaffNew] (STAFFID,FNAME,LNAME) VALUES (300,'Imran','Afzal'),(325,'John','Vick'),(314,'James','Dino')  
+        
+        insert into nameOnlyTable (fname,lname)
+        select fname,lname from salesstaffNew where id >= 3
+        
+        Select * INTO <destination table> FROM <source table>
 
         
         
