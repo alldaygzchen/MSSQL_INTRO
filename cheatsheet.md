@@ -220,7 +220,7 @@ https://www.ithome.com.tw/tech/47440
     SELECT *  FROM suppliers WHERE (state = 'California' AND supplier_id <> 900) OR (supplier_id = 100);
 
 12. group by class will use the column which are in the select column, the having class will be use the column in the grouping class
-13. add two dashes for comment
+13. add two dashes for comment or /* */
 14. examples
 
     select * from Person.address where postalcode = '98011'  -- single quote
@@ -242,3 +242,72 @@ https://www.ithome.com.tw/tech/47440
     select count(*) countofproduct,Color from Production.product group by Color having Color = 'yellow' # same result as previous
 
     select count(*) countofproduct,Color,Size from Production.product where color = 'yellow' group by Color,size having Size >= '44' #where and having can pu together
+    
+15. Join Introduction
+
+    1. foreign id should not be in list format in column field
+    2. foreign id should be unique in another table to prevent duplicated combinations
+
+    
+        SELECT e.EmpID,e.EmpName,s.SalesNumber,s.ItemSold FROM [dbo].[Employee] e
+        join [dbo].[Sales] s 
+        on e.EmpID = s.[EmpID]
+        order by e.EmpID
+
+        SELECT count(s.SalesNumber),e.EmpID,e.EmpName FROM [dbo].[Employee] e
+        join [dbo].[Sales] s 
+        on e.EmpID = s.[EmpID]
+        group by e.EmpID,e.EmpName
+        
+    3. Default join is inner join  
+    4. inner join,left join,right join,outer join  
+    5. full join = inner join + (left join -inner join) + (right join - inner join)  
+    6. left join (join the left table) vs right join (join the right table)
+    
+        select s.RollNo,s.StudentName,c.CourseID from [dbo].[Student] s
+        left join [dbo].[Course] c 
+        on s.RollNo = c.RollNO
+        
+        
+        select s.RollNo,s.StudentName,c.CourseID from [dbo].[Student] s
+        right join [dbo].[Course] c 
+        on s.RollNo = c.RollNO
+        
+ 15. Subquery (a sql embedded query within the where clause)
+     1. Subquery is not limitted to select statement such as insert ...
+     2. Subquery can be used to return a single value or row set [a column]; whereas join are used to return multiple rows [multiple columns]
+     3. Subquery can only have one column in the select clause, unless mulitple columns are in the main query for subquery to compare its mulitple columns http://www.baskent.edu.tr/~tkaracay/etudio/ders/dbase/sql/htmSQL/OracleDers12.htm
+     4. Subquery cannot use order by
+     5. Subquery that return more than one row can use multiple value operators such as in operator
+     6. Subquery cannot use between operator 
+
+        
+        
+        
+
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
