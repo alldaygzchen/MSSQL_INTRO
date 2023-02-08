@@ -204,7 +204,16 @@ https://www.ithome.com.tw/tech/47440
     FROM [AdventureWorks2016].[dbo].[EmployeePhoneDetail] #view
 
     [additional]
-    what is a snapshot. Difference between temporary table
+    what is a snapshot. Difference between temporary table??
+
+    1. A snapshot in SQL Server provides a read-only, static view of a database that is taken at a specific point in time
+    2. Even if the original table is modified, snapshot remains the same
+    3. temp table is not read-only changed.
+
+
+
+
+
 
 7. SELECT FROM WHERE GROUP BY HAVING ORDER BY
 8. sql is not case sensitive 
@@ -351,20 +360,191 @@ https://www.ithome.com.tw/tech/47440
     7. It can be easily modified without redeploying application
 
 
-    what is the difference between view and stored procedure
+    what is the difference between view and stored procedure?
+        
+        Stored procedures can be used to enforce business rules and to improve security, as they can be used to validate input and enforce data constraints.  
 
-
-
+        Views are used to simplify queries by providing a pre-defined set of columns and/or rows, based on a SELECT statement. 
+        SQL view cannot insert, update, or delete records. 
+        A temporary table is a separate and independent copy of the data from the original table
 
         
-        
-        
+        [without parameter]
+        CREATE PROCEDURE [dbo].[SelectAllPersonAddress]
+        AS
+        SELECT * FROM  Person.Address
+        go;
+        -----------------------
 
+        exec [dbo].[SelectAllPersonAddress] 
+
+        -----------------------
+
+        [with parameter]
+        CREATE PROCEDURE [dbo].[SelectAllPersonAddressWithParamswithEncryption] (@City NVARCHAR(30) = 'New York',@stateProvinceid int)
+        AS
+
+        BEGIN --start
+        SET NOCOUNT ON --no count message
+
+        SELECT * FROM  Person.Address where City = @city;
+
+        END --end
+        GO
+
+22. Function
+
+    1. Function can return a single value or table
+    2. We can't use a function to insert,update,delete records but store procedure can (only allows select statement)
+    3. Store procedure vs functions:
+        1. Stored procedure cannot be called within sql statements. Function can be
+        2. procedure can have output parameters
+        3. try- catch block cannot be used in a function
+        4. we can use transaction in procedure
+    4. Built in function 
+        1. Scalar function: operate a single value and return a single value
+        2. Aggregate function: max(), min()
+        3. Date and Time function: getdate(), Year() ....
     
+    5. sql server does not have nvl2 function 
+
+        SELECT column1,olumn2,
+        CASE
+            WHEN column3 IS NOT NULL THEN column3
+            ELSE column4
+        END AS new_column
+        FROM table;
+    
+    6. User defined function: scalar function, Inline table-valued function and multi-statement table-valued function
+    7. ITVF vs MSTVF
+        
+        1. inline table-valued function: returns a table and is defined using a single SELECT statement.
+        2. multi-statement table-valued function:  returns a table and is defined using a series of T-SQL statements
+
+        examples:
+            
+            CREATE FUNCTION dbo.GetInlineData (@start_date DATE, @end_date DATE)
+            RETURNS TABLE
+            AS
+            RETURN
+            (
+                SELECT column1, column2, column3
+                FROM table
+                WHERE date_column BETWEEN @start_date AND @end_date
+            )
+
+            SELECT * FROM dbo.GetInlineData ('2022-01-01', '2022-12-31')
 
 
+            CREATE FUNCTION dbo.GetMultiStatementData (@start_date DATE, @end_date DATE)
+            RETURNS @result TABLE (column1 INT, column2 VARCHAR(20), column3 DECIMAL(10,2))
+            AS
+            BEGIN
+                INSERT INTO @result
+                SELECT column1, column2, column3
+                FROM table
+                WHERE date_column BETWEEN @start_date AND @end_date
+
+                RETURN
+            END
+    8.  Built in function examples:
+
+        print upper('hehetgtAA')
+
+    9.  User defined function examples:
+                
+            [return single value]
+
+            Create function [dbo].[fnGetEmpFullName]
+            ( @FirstName varchar(50), @LastName varchar(50))
+            returns varchar(101)
+            As
+            begin
+            return (select @FirstName + ' '+@LastName);
+            end
+            GO
+
+            select dbo.fnGetEmpFullName (firstname,lastname) as Fullname , salary from FunctionEmployee
+
+            [return table]
+
+            create function [dbo].[fnGetEmployee]()
+            returns Table
+            As
+            return (select * from FunctionEmployee)
+            GO
 
 
+            create function [dbo].[fnGetMulEmployee]()
+            returns @Emp Table
+            (
+            Empid int,
+            FirstName varchar(50),
+            Salary int
+            )
+            As
+            Begin
+            Insert into @Emp Select e.EmpID,e.FirstName,e.Salary from FuntionEmployee e;
+            --Now update salary of first employee
+            update @Emp set Salary=25000 where EmpID=1;
+            --It will update only in @Emp table not in Original Employee table
+            return
+            end 
+            GO
+
+
+            select * from dbo.fnGetMulEmployee vs  select * from dbo.fnGetEmployee
+                will not change the orignal table
+ 
+    10. If you want to output a result from a SQL function, you need to either declare a variable outside of the function to store the  result, or use a stored procedure with output parameters.
+
+23. Triggers:
+        1. special stored procedure that are automatically executed in response to table,objects,server event
+        2. three trigger: DML, DDL , Logon triggers
+
+        3. Example
+
+            CREATE TRIGGER AfterInsertTrigger ON TriggerDemo_Parent
+            AFTER INSERT
+            AS INSERT INTO TriggerDemo_History VALUES ((SELECT TOP 1 ID FROM TriggerDemo_Parent), 'Insert')
+            GO
+            • CREATE TRIGGER AfterDeleteTrigger ON TriggerDemo_Parent
+            AFTER DELETE
+            AS INSERT INTO TriggerDemo_History VALUES ((SELECT TOP 1 ID FROM TriggerDemo_Parent), 'Delete')
+            GO
+            • CREATE TRIGGER AfterUPDATETrigger ON TriggerDemo_Parent
+            AFTER UPDATE
+            AS INSERT INTO TriggerDemo_History VALUES ((SELECT TOP 1 ID FROM TriggerDemo_Parent), 'UPDATE')
+            GO
+24. Index:
+        1. if table don't have a index, it will table scan and the table is called heap
+        2. Indexes are created on columns in tables or view
+        3. Index is made up by index nodes (pages) that are organize in b tree structure
+        4. Index can be set in primary key too 
+
+25. Clustered Index and Non Clusted Index
+
+        1. clustered index: stores actual data rows at the leaf level of the index
+        2. one clustered index on a table or view
+        3. Non clustered index: contains only the value from the indexed column (like a pointer)
+        4. multiple non clustered index is allow on table or view
+        5. clustered / non clustered can be composite index 
+        6. unique clustered index is automatically created when define primary key
+        7. unique non clustered index is automatically created when define unique key
+
+26. Index design consideration
+        1. Index are automatically updated when the rows are updated
+        2. Creating too much indexes will affect performance and storage
+        3.  non-clustered indexes are used to optimize performance for queries that search for specific values in columns other than the primary key.
+        
+        4. Example
+            • -- Create a nonclustered index on a table or view
+            • CREATE INDEX index1 ON schema1.table1 (column1);
+            • -- Create a clustered index on a table and use a 3-part name for the table
+            • CREATE CLUSTERED INDEX index1 ON database1.schema1.table1 (column1);
+            • -- Create a nonclustered index with a unique constraint
+            • -- on 3 columns and specify the sort order for each column
+            • CREATE UNIQUE INDEX index1 ON schema1.table1 (column1 DESC, column2 ASC, column3 DESC);
 
 
 
