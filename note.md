@@ -546,18 +546,77 @@ https://www.ithome.com.tw/tech/47440
             • -- on 3 columns and specify the sort order for each column
             • CREATE UNIQUE INDEX index1 ON schema1.table1 (column1 DESC, column2 ASC, column3 DESC);
 
+27. Index fragmentation
+    
+        1. Is the index performance value in percentage
+        2. Every index has its pages 
+        3. Internal Index Fragmentation: occur when data pages have too much free spaces
+        4. External Index Fragmentation: result of data pages out of order
+        5. formula: condense page / total page
+        6. https://sqlhints.com/wp-content/uploads/2018/05/Structure-of-Clustered-Index.jpg
+
+            SELECT S.name as 'Schema',
+            T.name as 'Table',
+            I.name as 'Index',
+            DDIPS.avg_fragmentation_in_percent,
+            DDIPS.page_count
+            FROM sys.dm_db_index_physical_stats (DB_ID(), NULL, NULL, NULL, NULL) AS DDIPS
+            INNER JOIN sys.tables T on T.object_id = DDIPS.object_id
+            INNER JOIN sys.schemas S on T.schema_id = S.schema_id
+            INNER JOIN sys.indexes I ON I.object_id = DDIPS.object_id
+            AND DDIPS.index_id = I.index_id
+            WHERE DDIPS.database_id = DB_ID()
+            and I.name is not null
+            AND DDIPS.avg_fragmentation_in_percent > 0
+            ORDER BY DDIPS.avg_fragmentation_in_percent desc
 
 
 
 
+        Rebuild: when fragmentation reaches greater than 30 percent
+        Reorganize: when fragmentation is between 11-30 percent
+        Ignore: 10 percent or less
 
 
 
+######################  Section 7
 
+1. SSMS: provide management platform for all kind of sql related work
+2. SQL Server Coniguration Manager:  basic confiuration management including servers,protocols
+3. SQL Server Profiler: monitor databse engine or analysis service [debugging the query]
+4. Databse Engine Tuning Advisor: create optimal sets of indexes,
+5. SQL server Tools: Building solutions for the business intelligence components
+6. Data Quality client: An ide to monitor data cleansing operation and it connect to DQS server
+7. Connectivity Components: Install components for communication between clients and server
 
-
-
-
+8. sql sever import and export wizard => create input and output like csv file for further appliation
+9. how to copy the table => right click on the table
+10. tools => options => tSQL =>line row
+11. right click on labmssql => reports 
+12. right click on query table =>results to
+13. right click on labmssql => properties
+14. navbar execution plan
+15. navbar intellisence enable
+16. right click table => objects explorer (table informations)
+17. right click on labmssql => activity monitors 
+18. sp_who2 active
+19. right click on labmssql => restart 
+20. database name => right click tasks => backup
+21. management => maintainace plan (backup and recovert)
+22. management => sql server agnet (job)
+23. https://blog.sqlauthority.com/2019/05/21/sql-server-difference-between-login-vs-user-security-concepts/
+24. Exporing sql server configuration manager
+    1. sql server services => right click and properties
+25. type of databases => user databases and system database (For SQL to operate)
+26. System database => Master (the core db, nost data are store in resource db now but we cannot directly access), temp db,  msdb(manage sql server agent configurations), model (all user defined database)
+    Distribution(SQL server replication)
+27. object creating, changing not recommend in system database
+28. Each SQL server instance has its own SQL server system database
+29. only full backup can be performed in master database
+30. error log : find recovery is complete when restarting 
+31. temdb: available to all users connected to the instance (save all temporary objects)
+32. temporary table are saved in tempdb
+33. how to move temp db
 
 
 

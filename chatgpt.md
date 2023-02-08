@@ -457,11 +457,11 @@
 
 
 
-
+        ----------------------------------------------------
         
         Q: what does pages mean
         A: In SQL Server, a "page" refers to a unit of memory management that holds a fixed amount of data (typically 8 KB). Pages are used by the SQL Server storage engine to store and manage data in a table or index. Pages are grouped together to form a "page chain" that represents a table or index on disk. When data is inserted, updated, or deleted in a table, the storage engine uses pages to manage the data. The concept of pages is central to how the SQL Server storage engine works and helps ensure the efficient and effective storage, retrieval, and manipulation of data in a database.
-
+        ----------------------------------------------------
         Q: what is physical order and logical order
         A: In SQL Server, the physical order of data refers to the actual on-disk layout of the data, including the order of pages and the order of rows within each page. The physical order of data is determined by the underlying storage engine and can be affected by factors such as data insertion patterns, data updates, and index reorganization operations.
 
@@ -469,19 +469,19 @@
 
         In general, the SQL Server storage engine attempts to optimize the physical order of data to minimize the number of page reads required to retrieve data and to minimize disk I/O. However, in some cases, the physical order of data may not match the logical order of the data, and the storage engine may need to perform additional work to sort the data in the desired logical order.
 
-
+        ----------------------------------------------------
 
         Q: so order by statement can easily  cause Index fragmentation,
         A: Yes, repeated use of the "ORDER BY" statement can result in index fragmentation. When data is inserted, updated or deleted, the physical order of the data pages in the index can become fragmented, leading to reduced performance and query efficiency. Index fragmentation occurs when the physical order of the pages in an index does not match the logical order of the data, as defined by the index key. This can lead to performance issues, such as increased disk I/O, slower query execution times, and increased resource usage. To resolve index fragmentation, you can use the "REORGANIZE" or "REBUILD" options in SQL Server.
 
-
+        ----------------------------------------------------
         Q: what means repeated use of the order by statement
         A: Repeated use of the ORDER BY statement refers to the practice of frequently sorting the data in a database table using the ORDER BY clause in SQL queries. This repeated sorting can result in index fragmentation, which can lead to slower query performance and a decrease in the overall efficiency of the database. To mitigate index fragmentation, it's a good practice to periodically rebuild the indexes or reorganize them to improve their structure and performance.
 
-
+        ----------------------------------------------------
         Q: what is internal fragmentaion
         A: Internal fragmentation in SQL Server refers to the unused space that remains within the pages of an index due to the size of the data stored in it. This occurs when the data size of a row stored in the index is smaller than the size of the actual page, leading to a portion of the page being unused. This unused space reduces the overall performance of the index and can lead to index fragmentation. To address internal fragmentation, SQL Server provides options such as index reorganization and index rebuilding, which can help reclaim the unused space and improve the performance of the index.
 
-
+        ----------------------------------------------------
         Q: Internal fragmentation may cause to due a lot of delete statement. Is that correct
         A: Yes, internal fragmentation can be caused by repeated deletions from a table, as it can leave behind empty space within the pages that make up an index. Over time, this can cause the index to become fragmented and negatively impact query performance.
